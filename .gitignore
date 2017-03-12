@@ -91,3 +91,6 @@ ENV/
 .DS_Store
 *.txt
 *.zip
+
+.idea
+Test
