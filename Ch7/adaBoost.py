@@ -103,7 +103,7 @@ def adaBoost(train_x, train_y, num_iter):
         #print(best_res_est, error_min, alpha_i, temp_y, temp, z_m, D, Gx)
         #print (D)
     print (best_stump_clu)
-    return best_stump_clu
+    return best_stump_clu, Gx
 # test, ret_test_y is col vector
 def testAdaBoost(test_x, best_stump_clu):
     m, n = test_x.shape
@@ -126,24 +126,59 @@ def errorRate(ret_test_y, test_y):
     error_rate = float(temp.sum())/test_y.shape[0]
     return error_rate
 
+# Gx is col vector, train_y is mat
+def plotROC(pre_strength, train_y):
+    #print (pre_strength)
+    cur = [1.0, 1.0]
+    num_pos = sum(np.array(train_y) == 1)
+    num_neg = len(train_y) - num_pos
+    y_step = 1/float(num_pos)
+    x_step = 1/float(num_neg)
+    y_sum = 0
+    #print (y_step,x_step)
+    sorted_index_list = list(pre_strength.argsort())
+    print (sorted_index_list)
+    fig = plt.figure()
+    fig.clf()
+    ax = fig.add_subplot(111)
+    for i in sorted_index_list:
+        if (train_y[i] == 1.0):
+            dx = 0
+            dy = y_step
+        else:
+            dx = x_step
+            dy = 0
+            y_sum += cur[1]
+        ax.plot([cur[0], cur[0] - dx], [cur[1], cur[1] - dy], c = 'b')
+        cur = [cur[0] - dx, cur[1] - dy]
+        #print(cur)
+    plt.show()
+    #print (y_sum*x_step)
+    return y_sum*x_step
+
 
 # main
-'''
+
+
 train_x, train_y = loadData()
 #D = np.ones((train_x.shape[0]))/train_x.shape[0]
 #print(D)
 #buildStump(train_x, train_y, D)
-#best_stump_clu = adaBoost(train_x, train_y, 10)
-test_x = np.mat([1.1, 1.2])
-testAdaBoost(test_x, best_stump_clu)
+best_stump_clu, Gx = adaBoost(train_x, train_y, 10)
+#test_x = np.mat([1.1, 1.2])
+#testAdaBoost(test_x, best_stump_clu)
+
+
 '''
 path = '/Users/mhl/Documents/MhlCode/mla/Ch7/'
 filename = path+'horseColicTraining2.txt'
-train_x,train_y = loadDataSet(filename)
+train_x, train_y = loadDataSet(filename)
 filename = path+'horseColicTest2.txt'
-test_x,test_y = loadDataSet(filename)
-best_stump_clu = adaBoost(train_x, train_y, 10)
-ret_test_y = testAdaBoost(test_x, best_stump_clu)
-error_rate = errorRate(ret_test_y, test_y)
-print(error_rate)
+test_x, test_y = loadDataSet(filename)
+best_stump_clu, Gx = adaBoost(train_x, train_y, 10)
+#ret_test_y = testAdaBoost(test_x, best_stump_clu)
+#error_rate = errorRate(ret_test_y, test_y)
+#print(error_rate)
+'''
+plotROC(Gx.T[0], train_y)
 
