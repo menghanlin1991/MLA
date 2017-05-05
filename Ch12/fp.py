@@ -126,7 +126,7 @@ def findPrefixPath(header_table, base_pat):
 def findFreSet(header_table, root_node, min_sup=3, pre_fix=set([]), freq_list=[]):
     header_list = [loop[0] for loop in sorted(header_table.items(), key=lambda p:p[1])]
     #print ('header_list', header_list)
-    #print ('freq_list', freq_list)
+    print ('freq_list', freq_list)
     for base_pat in header_list:
         new_fre_set = pre_fix.copy()
         new_fre_set.add(base_pat)
@@ -171,4 +171,4 @@ header_table, root_node = genFPTree(ret_dict)
 #root_node.disp(deep=0)
 findPrefixPath(header_table, 'z')
 freq_list = findFreSet(header_table, root_node)
-print (freq_list)
+#
